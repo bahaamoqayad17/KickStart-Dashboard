@@ -4,13 +4,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import Link from 'next/link';
 import { componentsPages } from '@/config/pages.config';
-import Icon from '../../../../components/icon/Icon';
-import Button from '../../../../components/ui/Button';
-import Input from '../../../../components/form/Input';
-import FieldWrap from '../../../../components/form/FieldWrap';
-import useDomRect from '../../../../hooks/useDomRect';
-import Badge from '../../../../components/ui/Badge';
-import Modal, { ModalBody, ModalHeader } from '../../../../components/ui/Modal';
+import Icon from '@/components/icon/Icon';
+import Button from '@/components/ui/Button';
+import Input from '@/components/form/Input';
+import FieldWrap from '@/components/form/FieldWrap';
+import useDomRect from '@/hooks/useDomRect';
+import Badge from '@/components/ui/Badge';
+import Modal, { ModalBody, ModalHeader } from '@/components/ui/Modal';
 
 const SearchPartial = () => {
 	const ref = useRef<HTMLDivElement>(null);
@@ -51,10 +51,6 @@ const SearchPartial = () => {
 		...Object.values(componentsPages.uiPages.subPages).map((i) => ({
 			...i,
 			category: 'Component',
-		})),
-		...Object.values(componentsPages.formPages.subPages).map((i) => ({
-			...i,
-			category: 'Form',
 		})),
 		...Object.values(componentsPages.integratedPages.subPages).map((i) => ({
 			...i,

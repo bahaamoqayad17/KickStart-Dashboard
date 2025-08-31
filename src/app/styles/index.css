@@ -11,6 +11,7 @@
 	html,
 	body {
 		@apply flex h-full flex-col scroll-smooth bg-zinc-100 text-zinc-800 dark:bg-zinc-950 dark:text-zinc-200;
+		font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 	}
 
 	html.dark {

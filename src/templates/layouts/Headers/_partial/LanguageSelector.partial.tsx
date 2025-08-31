@@ -2,7 +2,7 @@
 
 import React, { useContext } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
+import { useTranslations } from 'next-intl';
 import { TLang } from '@/types/lang.type';
 import { ThemeContext } from '@/context/themeContext';
 import dayjs from 'dayjs';
@@ -14,13 +14,13 @@ import Dropdown, {
 import Button from '../../../../components/ui/Button';
 import LANG from '../../../../constants/lang.constant';
 import Icon from '../../../../components/icon/Icon';
-import i18nConfig from '../../../../../i18nConfig';
+import { routing } from '@/locales/routing';
 
 const LanguageSelectorPartial = () => {
 	const { setLanguage, setDir } = useContext(ThemeContext);
 
-	const { i18n } = useTranslation();
-	const currentLocale = i18n.language;
+	const t = useTranslations();
+	const currentLocale = t.locale;
 	const router = useRouter();
 	const currentPathname = usePathname();
 
@@ -33,15 +33,15 @@ const LanguageSelectorPartial = () => {
 		document.cookie = `NEXT_LOCALE=${newLocale};expires=${expires};path=/`;
 
 		// redirect to the new locale path
-		if (currentLocale === i18nConfig.defaultLocale && !i18nConfig.prefixDefault) {
-			i18n.changeLanguage(newLocale)
+		if (currentLocale === routing.defaultLocale) {
+			t.changeLanguage(newLocale)
 				.then(() => {
 					localStorage.setItem('fyr_language', newLocale);
-					localStorage.setItem('fyr_dir', i18n.dir());
+					localStorage.setItem('fyr_dir', t.dir());
 				})
 				.then(() => {
 					setLanguage(newLocale);
-					setDir(i18n.dir());
+					setDir(t.dir());
 				})
 				.then(() => {
 					// Changing the global locale doesn't affect existing instances.
@@ -54,14 +54,14 @@ const LanguageSelectorPartial = () => {
 				})
 				.catch(() => {});
 		} else {
-			i18n.changeLanguage(newLocale)
+			t.changeLanguage(newLocale)
 				.then(() => {
 					localStorage.setItem('fyr_language', newLocale);
-					localStorage.setItem('fyr_dir', i18n.dir());
+					localStorage.setItem('fyr_dir', t.dir());
 				})
 				.then(() => {
 					setLanguage(newLocale);
-					setDir(i18n.dir());
+					setDir(t.dir());
 				})
 				.then(() => {
 					// Changing the global locale doesn't affect existing instances.

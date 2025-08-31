@@ -199,94 +199,10 @@ const DefaultAsideTemplate = () => {
 							}}
 						/>
 					</NavItem>
-					<NavItem
-						text={appPages.educationAppPages.text}
-						to={appPages.educationAppPages.to}
-						icon={appPages.educationAppPages.icon}>
-						<Badge variant='outline' className='border-transparent leading-none'>
-							Soon
-						</Badge>
-					</NavItem>
-					<NavItem
-						text={appPages.reservationAppPages.text}
-						to={appPages.reservationAppPages.to}
-						icon={appPages.reservationAppPages.icon}>
-						<Badge variant='outline' className='border-transparent leading-none'>
-							Soon
-						</Badge>
-					</NavItem>
 
 					<NavSeparator />
 
 					<NavTitle>Components & Templates</NavTitle>
-					<NavCollapse
-						text={componentsPages.uiPages.text}
-						to={componentsPages.uiPages.to}
-						icon={componentsPages.uiPages.icon}>
-						<NavItem {...componentsPages.uiPages.subPages.alertPage} />
-						<NavItem {...componentsPages.uiPages.subPages.badgePage} />
-						<NavItem {...componentsPages.uiPages.subPages.buttonPage} />
-						<NavItem {...componentsPages.uiPages.subPages.buttonGroupPage} />
-						<NavItem {...componentsPages.uiPages.subPages.cardPage} />
-						<NavItem {...componentsPages.uiPages.subPages.collapsePage} />
-						<NavItem {...componentsPages.uiPages.subPages.dropdownPage} />
-						<NavItem {...componentsPages.uiPages.subPages.modalPage} />
-						<NavItem {...componentsPages.uiPages.subPages.offcanvasPage} />
-						<NavItem {...componentsPages.uiPages.subPages.progressPage} />
-						<NavItem {...componentsPages.uiPages.subPages.tablePage}>
-							<NavButton
-								title='Open Npm page'
-								icon='CustomNpm'
-								onClick={() => {
-									window.open(
-										'https://www.npmjs.com/package/@tanstack/react-table',
-										'_blank',
-									);
-								}}
-							/>
-						</NavItem>
-						<NavItem {...componentsPages.uiPages.subPages.tooltipPage} />
-					</NavCollapse>
-					<NavCollapse
-						text={componentsPages.formPages.text}
-						to={componentsPages.formPages.to}
-						icon={componentsPages.formPages.icon}>
-						<NavItem {...componentsPages.formPages.subPages.fieldWrapPage} />
-						<NavItem {...componentsPages.formPages.subPages.checkboxPage} />
-						<NavItem {...componentsPages.formPages.subPages.checkboxGroupPage} />
-						<NavItem {...componentsPages.formPages.subPages.inputPage} />
-						<NavItem {...componentsPages.formPages.subPages.labelPage} />
-						<NavItem {...componentsPages.formPages.subPages.radioPage} />
-						<NavItem {...componentsPages.formPages.subPages.richTextPage}>
-							<NavButton
-								title='Open Npm page'
-								icon='CustomNpm'
-								onClick={() => {
-									window.open(
-										'https://www.npmjs.com/package/slate-react',
-										'_blank',
-									);
-								}}
-							/>
-						</NavItem>
-						<NavItem {...componentsPages.formPages.subPages.selectPage} />
-						<NavItem {...componentsPages.formPages.subPages.selectReactPage}>
-							<NavButton
-								title='Open Npm page'
-								icon='CustomNpm'
-								onClick={() => {
-									window.open(
-										'https://www.npmjs.com/package/react-select',
-										'_blank',
-									);
-								}}
-							/>
-						</NavItem>
-						<NavItem {...componentsPages.formPages.subPages.textareaPage} />
-						<NavItem {...componentsPages.formPages.subPages.validationPage}>
-							<Badge variant='outline'>Formik</Badge>
-						</NavItem>
-					</NavCollapse>
 					<NavCollapse
 						text={componentsPages.integratedPages.text}
 						to={componentsPages.integratedPages.to}
@@ -298,8 +214,6 @@ const DefaultAsideTemplate = () => {
 							{...componentsPages.integratedPages.subPages.reactSimpleMapsPage}
 						/>
 						<NavItem {...componentsPages.integratedPages.subPages.waveSurferPage} />
-						<NavItem {...componentsPages.formPages.subPages.richTextPage} />
-						<NavItem {...componentsPages.formPages.subPages.selectReactPage} />
 					</NavCollapse>
 
 					<NavCollapse
@@ -324,84 +238,9 @@ const DefaultAsideTemplate = () => {
 							</Badge>
 						</NavItem>
 					</NavCollapse>
-
-					<NavSeparator />
-					<NavTitle>Members</NavTitle>
-					<NavUser
-						text={`${usersDb[0].firstName} ${usersDb[0].lastName}`}
-						image={usersDb[0].image?.thumb}
-						to={`${appPages.chatAppPages.to}/${usersDb[0].username}`}
-					/>
-					<NavUser
-						text={`${usersDb[1].firstName} ${usersDb[1].lastName}`}
-						image={usersDb[1].image?.thumb}
-						to={`${appPages.chatAppPages.to}/${usersDb[1].username}`}>
-						<NavButton
-							title='New Message'
-							icon='HeroChatBubbleLeftEllipsis'
-							iconColor='emerald'
-							onClick={() => {}}
-						/>
-					</NavUser>
-					<NavUser
-						text={`${usersDb[2].firstName} ${usersDb[2].lastName}`}
-						image={usersDb[2].image?.thumb}
-						to={`${appPages.chatAppPages.to}/${usersDb[2].username}`}
-					/>
-					<NavUser
-						text={`${usersDb[3].firstName} ${usersDb[3].lastName}`}
-						image={usersDb[3].image?.thumb}
-						to={`${appPages.chatAppPages.to}/${usersDb[3].username}`}>
-						<NavButton
-							title='New Message'
-							icon='HeroChatBubbleLeftEllipsis'
-							iconColor='emerald'
-							onClick={() => {}}
-						/>
-					</NavUser>
-					<NavUser
-						text={`${usersDb[4].firstName} ${usersDb[4].lastName}`}
-						image={usersDb[4].image?.thumb}
-						to={`${appPages.chatAppPages.to}/${usersDb[4].username}`}>
-						<NavButton
-							title='New Message'
-							icon='HeroChatBubbleLeftEllipsis'
-							iconColor='emerald'
-							onClick={() => {}}
-						/>
-					</NavUser>
 				</Nav>
 			</AsideBody>
 			<AsideFooter>
-				<Nav>
-					<NavSeparator />
-					<NavCollapse text='Nav Collapse' to='/' icon='HeroQueueList'>
-						<NavItem text='Nav item' icon='HeroPencil' />
-						<NavItem text='With badge'>
-							<Badge variant='solid' className='leading-none'>
-								3
-							</Badge>
-						</NavItem>
-						<NavItem text='With button'>
-							<NavButton icon='HeroRocketLaunch' title='New' />
-						</NavItem>
-						<NavItem text='With badge & button'>
-							<Badge variant='solid' className='leading-none'>
-								3
-							</Badge>
-							<NavButton icon='HeroRocketLaunch' title='New' />
-						</NavItem>
-						<NavTitle>Navigation Title</NavTitle>
-						<NavCollapse text='Nav Level 2' to='/' icon='HeroQueueList'>
-							<NavItem text='Nav Item' />
-							<NavCollapse text='Nav Level 3' to='/' icon='HeroQueueList'>
-								<NavItem text='Nav Item' />
-							</NavCollapse>
-							<NavItem text='Nav Item' />
-						</NavCollapse>
-					</NavCollapse>
-				</Nav>
-
 				<UserTemplate />
 				<DarkModeSwitcherPart />
 			</AsideFooter>

@@ -1,0 +1,47 @@
+[
+    {
+        "_id": "507f1f77bcf86cd799439011",
+        "username": "sophiejones",
+        "email": "admin@admin.com",
+        "password": "$2b$10$7Qy/rS4OuREGLPYDoJY2Qu/0GuwcAVsANKx0CpA9LRYcp0uWbTpMW",
+        "passwordConfirm": "$2b$10$7Qy/rS4OuREGLPYDoJY2Qu/0GuwcAVsANKx0CpA9LRYcp0uWbTpMW",
+        "name": "Sophie Jones",
+        "mobile_number": "+1 (555) 555-1234",
+        "position": "Web Developer",
+        "bio": "Experienced web developer with expertise in React, Node.js, and MongoDB. Passionate about creating scalable and user-friendly applications.",
+        "gender": "Female",
+        "date_of_birth": "1990-05-15",
+        "avatar": "https://bariq.s3.eu-central-1.amazonaws.com/default-avatar.jpg",
+        "isVerified": true,
+        "isActive": true,
+        "role": "507f1f77bcf86cd799439021",
+        "socialAuth": {
+            "google": true,
+            "linkedin": false
+        },
+        "payment_method": {
+            "bank_transfer": {
+                "bank_name": "Chase Bank",
+                "bank_branch": "Downtown Branch",
+                "bank_address": "123 Main St, New York, NY 10001",
+                "account_holder_name": "Sophie Jones",
+                "account_number": "1234567890",
+                "IBAN": "US12345678901234567890",
+                "swift_bic_code": "CHASUS33",
+                "status": true
+            },
+            "network": {
+                "value": "Ethereum",
+                "status": true
+            },
+            "paypal": {
+                "value": "sophie.jones@paypal.com",
+                "status": true
+            },
+            "cash": {
+                "value": "",
+                "status": false
+            }
+        }
+    }
+]

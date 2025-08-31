@@ -8,22 +8,15 @@ import type { Metadata } from 'next';
 import AppWrapper from '@/app/[locale]/_app';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import { dir } from 'i18next';
-import AsideRouter from '@/components/router/AsideRouter';
-import HeaderRouter from '@/components/router/HeaderRouter';
-import FooterRouter from '@/components/router/FooterRouter';
-import Wrapper from '@/components/layouts/Wrapper/Wrapper';
-import { Poppins } from 'next/font/google';
 import Providers from '@/app/[locale]/_providers';
-import i18nConfig from '../../../i18nConfig';
-
-const poppins = Poppins({
-	display: 'swap',
-	preload: false,
-	style: ['normal', 'italic'],
-	weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
-	subsets: ['latin', 'latin-ext'],
-});
+import { NextIntlClientProvider, hasLocale } from 'next-intl';
+import { getUserFromCookie } from '@/lib/cookie';
+import { UserType } from '@/models/User';
+import { SessionProvider } from '@/context/sessionContext';
+import {notFound} from 'next/navigation';
+import {routing} from '@/locales/routing';
+import {setRequestLocale, getMessages} from 'next-intl/server';
+import { poppins } from '@/config/fonts.config';
 
 export const metadata: Metadata = {
 	title: 'Fyr | React NextJs TypeScript Tailwind Admin & AI Chat Template',
@@ -31,36 +24,44 @@ export const metadata: Metadata = {
 };
 
 export function generateStaticParams() {
-	return i18nConfig.locales.map((locale) => ({ locale }));
+  return routing.locales.map((locale: string) => ({locale}));
 }
 
-const RootLayout = ({
+const RootLayout = async ({
 	children,
-	params: { locale },
+	params,
 }: {
 	children: ReactNode;
-	params: { locale: string };
+	  params: Promise<{locale: string}>;
+
 }) => {
 	dayjs.extend(localizedFormat);
+	const user = await getUserFromCookie();
+	const {locale} = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
 
+  setRequestLocale(locale);
+  const messages = await getMessages();
+  
 	return (
-		<Providers>
-			<html suppressHydrationWarning lang={locale} dir={dir(locale)}>
-				<body className={poppins.className}>
-					<div id='root'>
-						<div data-component-name='App' className='flex grow flex-col'>
-							<AsideRouter />
-							<Wrapper>
-								<HeaderRouter />
-								<AppWrapper>{children}</AppWrapper>
-								<FooterRouter />
-							</Wrapper>
-						</div>
-					</div>
-					<div id='portal-root' />
-				</body>
-			</html>
-		</Providers>
+		<SessionProvider initialUser={user as unknown as UserType}>
+			<Providers>
+				<html suppressHydrationWarning lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+					<body className={`${poppins.variable} font-sans`}>
+						<NextIntlClientProvider locale={locale} messages={messages}>
+							<div id='root'>
+								<div data-component-name='App' className='flex grow flex-col'>
+									<AppWrapper>{children as ReactNode}</AppWrapper>
+								</div>
+							</div>
+							<div id='portal-root' />
+						</NextIntlClientProvider>
+					</body>
+				</html>
+			</Providers>
+		</SessionProvider>
 	);
 };
 

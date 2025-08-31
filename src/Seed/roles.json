@@ -1,0 +1,32 @@
+[
+    {
+        "_id": "507f1f77bcf86cd799439021",
+        "name": "admin",
+        "description": "Admin role"
+    },
+    {
+        "_id": "507f1f77bcf86cd799439025",
+        "name": "freelancer",
+        "description": "Freelancer role"
+    },
+    {
+        "_id": "507f1f77bcf86cd799439024",
+        "name": "pm_manager",
+        "description": "Project Manager role"
+    },
+    {
+        "_id": "507f1f77bcf86cd799439023",
+        "name": "financial",
+        "description": "Financial role"
+    },
+    {
+        "_id": "507f1f77bcf86cd799439026",
+        "name": "sales",
+        "description": "Sales role"
+    },
+    {
+        "_id": "507f1f77bcf86cd799439022",
+        "name": "project_manager",
+        "description": "Project Manager role"
+    }
+]

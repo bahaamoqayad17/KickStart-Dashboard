@@ -7,9 +7,7 @@ import { TIcons } from '@/types/icons.type';
 import { TColors } from '@/types/colors.type';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { useCurrentLocale } from 'next-i18n-router/client';
-import TranslationsProvider from '@/components/TranslationsProvider';
-import { useTranslation } from 'react-i18next';
+import { useTranslations } from 'next-intl';
 import { StaticImageData } from 'next/image';
 import purePathnameUtil from '@/utils/purePathname.util';
 import Icon, { IIconProps } from '../../icon/Icon';
@@ -17,9 +15,7 @@ import useAsideStatus from '../../../hooks/useAsideStatus';
 import themeConfig from '../../../config/theme.config';
 import Tooltip from '../../ui/Tooltip';
 import Avatar from '../../Avatar';
-import i18nConfig from '../../../../i18nConfig';
 
-const i18nNamespaces = ['translation'];
 
 const navItemClasses = {
 	default: classNames(
@@ -174,7 +170,7 @@ interface INavItemProps extends HTMLAttributes<HTMLLIElement> {
 export const NavItem: FC<INavItemProps> = (props) => {
 	const { children, icon, text, to, className, ...rest } = props;
 
-	const { t } = useTranslation();
+	const t = useTranslations();
 
 	const { asideStatus, setAsideStatus } = useAsideStatus();
 
@@ -284,7 +280,7 @@ interface INavCollapseProps extends HTMLAttributes<HTMLLIElement> {
 export const NavCollapse: FC<INavCollapseProps> = (props) => {
 	const { children, icon, text, className, to, ...rest } = props;
 
-	const { t } = useTranslation();
+	const t = useTranslations();
 
 	const id = useId();
 	const [isActive, setIsActive] = useState<boolean>(false);
@@ -363,7 +359,7 @@ interface INavTitleProps extends HTMLAttributes<HTMLLIElement> {
 export const NavTitle: FC<INavTitleProps> = (props) => {
 	const { children, className, ...rest } = props;
 
-	const { t } = useTranslation();
+	const t = useTranslations();
 
 	const { asideStatus } = useAsideStatus();
 
@@ -397,7 +393,7 @@ interface INavUserProps extends HTMLAttributes<HTMLLIElement> {
 export const NavUser: FC<INavUserProps> = (props) => {
 	const { children, image, text, to, className, ...rest } = props;
 
-	const { t } = useTranslation();
+		const t = useTranslations();
 
 	const { asideStatus, setAsideStatus } = useAsideStatus();
 
@@ -528,14 +524,11 @@ interface INavProps extends HTMLAttributes<HTMLDivElement> {
 }
 const Nav: FC<INavProps> = (props) => {
 	const { children, className, ...rest } = props;
-	const locale = useCurrentLocale(i18nConfig);
 
 	return (
-		<TranslationsProvider namespaces={i18nNamespaces} locale={locale || 'en'}>
 			<nav data-component-name='Nav' className={classNames(className)} {...rest}>
 				<ul>{children}</ul>
 			</nav>
-		</TranslationsProvider>
 	);
 };
 Nav.displayName = 'Nav';
