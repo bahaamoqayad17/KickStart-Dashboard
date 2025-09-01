@@ -9,12 +9,12 @@ const asideRoutes: TRoute[] = [
 		path: `${appPages.mailAppPages.to}/*`,
 		element: <MailAsideTemplate />,
 	},
-	{ path: '/*', element: <DefaultAsideTemplate /> },
+	{ path: '/*', element: null },
 	{ path: '/login', element: null },
 	{ path: '/register', element: null },
 	{ path: '/forgot-password', element: null },
 	{ path: '/reset-password', element: null },
-	{ path: '/*', element: <DefaultAsideTemplate /> },
+	{ path: '/admin/*', element: <DefaultAsideTemplate /> },
 ];
 
 export default asideRoutes;

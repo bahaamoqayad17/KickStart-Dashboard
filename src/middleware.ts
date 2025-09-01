@@ -1,10 +1,7 @@
-import createMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 import { hasLocale } from 'next-intl';
+import { getLocale } from 'next-intl/server';
 import { routing } from './locales/routing';
-
-export default createMiddleware(routing);
-
 import jwt from 'jsonwebtoken';
 
 const publicRoutes = [
@@ -33,11 +30,40 @@ function isSessionExpired(token?: string): boolean {
 export async function middleware(request: NextRequest) {
 	const pathname = request.nextUrl.pathname;
 
+	// Handle locale detection and routing
 	let pathWithoutLocale = pathname;
+	let locale = routing.defaultLocale as 'en' | 'ar';
+
+	// Check if the path already has a valid locale
 	if (hasLocale(routing.locales, pathname)) {
+		locale = (await getLocale()) as 'en' | 'ar';
 		const segments = pathname.split('/');
 		segments.splice(1, 1);
 		pathWithoutLocale = segments.join('/') || '/';
+		console.log(
+			`[Middleware] Path has locale: ${pathname} -> locale: ${locale}, pathWithoutLocale: ${pathWithoutLocale}`,
+		);
+	} else {
+		// Only redirect to default locale if the path doesn't already start with it
+		// and if we're not on a root path like '/'
+		if (
+			pathname !== '/' &&
+			!pathname.startsWith(`/${routing.defaultLocale}/`) &&
+			!pathname.startsWith(`/${routing.defaultLocale}`)
+		) {
+			const url = request.nextUrl.clone();
+			url.pathname = `/${routing.defaultLocale}${pathname}`;
+			console.log(
+				`[Middleware] Redirecting to default locale: ${pathname} -> ${url.pathname}`,
+			);
+			return NextResponse.redirect(url);
+		}
+		// If we're here, either we're on root '/' or already have the default locale
+		pathWithoutLocale =
+			pathname === '/' ? '/' : pathname.replace(`/${routing.defaultLocale}`, '') || '/';
+		console.log(
+			`[Middleware] No redirect needed: ${pathname} -> pathWithoutLocale: ${pathWithoutLocale}`,
+		);
 	}
 
 	const isPublicRoute = publicRoutes.some(
@@ -49,18 +75,16 @@ export async function middleware(request: NextRequest) {
 
 	// Redirect logged-in users away from /login
 	if (hasSession && (pathWithoutLocale === '/login' || pathWithoutLocale.startsWith('/login'))) {
-		const homeUrl = new URL('/', request.url);
+		const homeUrl = new URL(`/${locale}`, request.url);
 		return NextResponse.redirect(homeUrl);
 	}
 
 	// Redirect unauthenticated or expired sessions away from protected routes
 	if (!isPublicRoute && !hasSession) {
 		const requestUrl = new URL(request.url);
-
 		const relativePath = requestUrl.pathname + requestUrl.search;
-		// const baseUrl = process.env.NEXTAUTH_URL || `${requestUrl.protocol}//${requestUrl.host}`;
 		const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
-		const loginUrl = new URL('/login', baseUrl);
+		const loginUrl = new URL(`/${locale}/login`, baseUrl);
 		loginUrl.searchParams.set('callbackUrl', relativePath);
 		return NextResponse.redirect(loginUrl);
 	}

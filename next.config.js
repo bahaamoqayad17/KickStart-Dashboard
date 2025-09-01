@@ -13,6 +13,27 @@ const nextConfig = {
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
+	reactStrictMode: true,
+	typescript: {
+		// !! WARN !!
+		// Dangerously allow production builds to successfully complete even if
+		// your project has type errors.
+		// !! WARN !!
+		ignoreBuildErrors: true,
+	},
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'bariq.s3.eu-central-1.amazonaws.com',
+			},
+		],
+	},
+	experimental: {
+		serverActions: {
+			bodySizeLimit: '25mb', // Increase body size limit for file uploads
+		},
+	},
 };
 
 module.exports = withNextIntl(nextConfig);

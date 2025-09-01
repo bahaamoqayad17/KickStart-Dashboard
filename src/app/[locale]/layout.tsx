@@ -13,9 +13,9 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getUserFromCookie } from '@/lib/cookie';
 import { UserType } from '@/models/User';
 import { SessionProvider } from '@/context/sessionContext';
-import {notFound} from 'next/navigation';
-import {routing} from '@/locales/routing';
-import {setRequestLocale, getMessages} from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import { routing } from '@/locales/routing';
+import { setRequestLocale, getMessages } from 'next-intl/server';
 import { poppins } from '@/config/fonts.config';
 
 export const metadata: Metadata = {
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export function generateStaticParams() {
-  return routing.locales.map((locale: string) => ({locale}));
+	return routing.locales.map((locale: string) => ({ locale }));
 }
 
 const RootLayout = async ({
@@ -32,19 +32,19 @@ const RootLayout = async ({
 	params,
 }: {
 	children: ReactNode;
-	  params: Promise<{locale: string}>;
-
+	params: Promise<{ locale: string }>;
 }) => {
 	dayjs.extend(localizedFormat);
 	const user = await getUserFromCookie();
-	const {locale} = await params;
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
+	const { locale } = await params;
 
-  setRequestLocale(locale);
-  const messages = await getMessages();
-  
+	if (!hasLocale(routing.locales, locale)) {
+		notFound();
+	}
+
+	setRequestLocale(locale);
+	const messages = await getMessages();
+
 	return (
 		<SessionProvider initialUser={user as unknown as UserType}>
 			<Providers>
