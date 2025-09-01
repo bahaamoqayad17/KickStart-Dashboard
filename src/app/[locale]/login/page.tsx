@@ -5,7 +5,6 @@ import PageWrapper from '@/components/layouts/PageWrapper/PageWrapper';
 import Button from '@/components/ui/Button';
 import classNames from 'classnames';
 import { useFormik } from 'formik';
-import usersDb from '@/mocks/db/users.db';
 import LogoTemplate from '@/templates/layouts/Logo/Logo.template';
 import Validation from '@/components/form/Validation';
 import FieldWrap from '@/components/form/FieldWrap';
@@ -13,31 +12,36 @@ import Icon from '@/components/icon/Icon';
 import Input from '@/components/form/Input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import useDarkMode from '@/hooks/useDarkMode';
+import { TDarkMode } from '@/types/darkMode.type';
+import { useSession } from '@/context/sessionContext';
 
 type TValues = {
-	username: string;
+	email: string;
 	password: string;
+	rememberMe: boolean;
 };
 
-const LoginPage = ({
-	searchParams,
-}: {
-	searchParams?: Record<'callbackUrl' | 'error', string>;
-}) => {
+const LoginPage = () => {
 	const router = useRouter();
-
+	const { addUser } = useSession();
+	const { setDarkModeStatus } = useDarkMode();
 	const [passwordShowStatus, setPasswordShowStatus] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+
 	const formik = useFormik({
 		initialValues: {
-			username: usersDb[5].username,
-			password: usersDb[5].password,
+			email: '',
+			password: '',
+			rememberMe: true,
 		},
 		validate: (values: TValues) => {
 			const errors: Partial<TValues> = {};
 
-			if (!values.username) {
-				errors.username = 'Required';
+			if (!values.email) {
+				errors.email = 'Required';
+			} else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+				errors.email = 'Invalid email address';
 			}
 
 			if (!values.password) {
@@ -46,27 +50,40 @@ const LoginPage = ({
 
 			return errors;
 		},
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		onSubmit: async (values: TValues, { setFieldError }) => {
-			const res = await signIn('credentials', {
-				username: values.username,
-				password: values.password,
-				redirect: false,
-			});
+			setIsLoading(true);
 
-			if (!res?.error) {
-				router.push(searchParams?.callbackUrl ?? (process.env.NEXT_PUBLIC_URL as string));
+			try {
+				const response = await fetch('/api/auth/login', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						email: values.email,
+						password: values.password,
+						rememberMe: values.rememberMe,
+					}),
+				});
+
+				const data = await response.json();
+
+				if (data.status) {
+					setDarkModeStatus(data.user.appearance as TDarkMode);
+					addUser({ ...data.user, role: data.user.role.name });
+					router.replace('/');
+				} else {
+					// Login failed
+					setFieldError('email', data.error);
+					setFieldError('password', data.error);
+				}
+			} catch (error) {
+				console.error('Login error:', error);
+				setFieldError('email', 'Login failed. Please try again.');
+				setFieldError('password', 'Login failed. Please try again.');
+			} finally {
+				setIsLoading(false);
 			}
-
-			// onLogin(values.username, values.password)
-			// 	.then(() => {})
-			// 	.catch((e: Error) => {
-			// 		if (e.cause === 'username') {
-			// 			setFieldError('username', e.message);
-			// 			setFieldError('password', e.message);
-			// 		}
-			// 		if (e.cause === 'password') setFieldError('password', e.message);
-			// 	});
 		},
 	});
 
@@ -93,7 +110,7 @@ const LoginPage = ({
 								color='zinc'
 								size='lg'
 								className='w-full'
-								onClick={() => signIn('google', { callbackUrl: '/' })}>
+								isDisable={isLoading}>
 								Google
 							</Button>
 						</div>
@@ -104,7 +121,7 @@ const LoginPage = ({
 								color='zinc'
 								size='lg'
 								className='w-full'
-								onClick={() => signIn('google', { callbackUrl: '/' })}>
+								isDisable={isLoading}>
 								Apple
 							</Button>
 						</div>
@@ -113,27 +130,29 @@ const LoginPage = ({
 					<div>
 						<span>Or continue with email address</span>
 					</div>
-					<form className='flex flex-col gap-4' noValidate>
+					<form className='flex flex-col gap-4' noValidate onSubmit={formik.handleSubmit}>
 						<div
 							className={classNames({
 								'mb-2': !formik.isValid,
 							})}>
 							<Validation
 								isValid={formik.isValid}
-								isTouched={formik.touched.username}
-								invalidFeedback={formik.errors.username}
+								isTouched={formik.touched.email}
+								invalidFeedback={formik.errors.email}
 								validFeedback='Good'>
 								<FieldWrap
 									firstSuffix={<Icon icon='HeroEnvelope' className='mx-2' />}>
 									<Input
 										dimension='lg'
-										id='username'
-										autoComplete='username'
-										name='username'
-										placeholder='Email or username'
-										value={formik.values.username}
+										id='email'
+										autoComplete='email'
+										name='email'
+										type='email'
+										placeholder='Email address'
+										value={formik.values.email}
 										onChange={formik.handleChange}
 										onBlur={formik.handleBlur}
+										disabled={isLoading}
 									/>
 								</FieldWrap>
 							</Validation>
@@ -168,17 +187,45 @@ const LoginPage = ({
 										value={formik.values.password}
 										onChange={formik.handleChange}
 										onBlur={formik.handleBlur}
+										disabled={isLoading}
 									/>
 								</FieldWrap>
 							</Validation>
 						</div>
+
+						<div className='flex justify-end'>
+							<Link
+								href='/forgot-password'
+								className='text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'>
+								Forgot your password?
+							</Link>
+						</div>
+
+						<div className='flex items-center gap-2'>
+							<input
+								type='checkbox'
+								id='rememberMe'
+								name='rememberMe'
+								checked={formik.values.rememberMe}
+								onChange={formik.handleChange}
+								className='rounded border-gray-300'
+								disabled={isLoading}
+							/>
+							<label
+								htmlFor='rememberMe'
+								className='text-sm text-gray-600 dark:text-gray-400'>
+								Remember me for 30 days
+							</label>
+						</div>
+
 						<div>
 							<Button
 								size='lg'
 								variant='solid'
 								className='w-full font-semibold'
+								isDisable={isLoading}
 								onClick={() => formik.handleSubmit()}>
-								Sign in
+								{isLoading ? 'Signing in...' : 'Sign in'}
 							</Button>
 						</div>
 					</form>
@@ -190,11 +237,15 @@ const LoginPage = ({
 					<div>
 						<span className='flex gap-2 text-sm'>
 							<span className='text-zinc-400 dark:text-zinc-600'>
-								Don’t have an account?
+								Don't have an account?
 							</span>
-							<Link href='/' className='hover:text-inherit'>
-								Sign up
-							</Link>
+							<span
+								className='cursor-pointer hover:text-inherit'
+								onClick={() => {
+									router.push('/register');
+								}}>
+								Register
+							</span>
 						</span>
 					</div>
 				</div>

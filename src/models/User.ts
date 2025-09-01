@@ -39,32 +39,15 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			trim: true,
 		},
-		position: {
-			type: String,
-			trim: true,
-			maxlength: 100,
-		},
-		bio: {
-			type: String,
-			maxlength: 1000,
-		},
 		gender: {
 			type: String,
 			enum: ['Male', 'Female', 'Other'],
-			trim: true,
-		},
-		date_of_birth: {
-			type: String,
 			trim: true,
 		},
 		avatar: {
 			type: String,
 			trim: true,
 			default: 'https://bariq.s3.eu-central-1.amazonaws.com/default-avatar.jpg',
-		},
-		isVerified: {
-			type: Boolean,
-			default: false,
 		},
 		isActive: {
 			type: Boolean,
@@ -74,16 +57,6 @@ const userSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Role',
 			default: '507f1f77bcf86cd799439025',
-		},
-		socialAuth: {
-			google: {
-				type: Boolean,
-				default: false,
-			},
-			linkedin: {
-				type: Boolean,
-				default: false,
-			},
 		},
 		appearance: {
 			type: String,
@@ -120,18 +93,11 @@ export type UserType = Omit<InferSchemaType<typeof userSchema>, 'role'> & {
 	passwordConfirm?: string; // Optional because it gets deleted in toJSON
 	name: string;
 	mobile_number?: string;
-	position?: string;
-	bio?: string;
 	gender?: 'Male' | 'Female' | 'Other';
-	date_of_birth?: string;
 	avatar?: string;
 	isVerified: boolean;
 	isActive: boolean;
 	role: mongoose.Types.ObjectId | string | RoleType;
-	socialAuth: {
-		google: boolean;
-		linkedin: boolean;
-	};
 	appearance: 'light' | 'dark';
 	__v: number;
 	createdAt: Date;
